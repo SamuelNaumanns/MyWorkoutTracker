@@ -27,12 +27,10 @@ struct ContentView: View {
                             .font(.subheadline)
                     }
                 }
+                .onDelete(perform: clearWorkouts)
             }
             .navigationTitle("Workouts")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Clear workouts", role: .destructive, action: clearWorkouts)
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add workouts", action: addWorkouts)
                 }
@@ -40,8 +38,9 @@ struct ContentView: View {
         }
     }
     
-    func clearWorkouts() {
-        for workout in workouts {
+    func clearWorkouts(_ indexSet: IndexSet) {
+        for i in indexSet {
+            let workout = workouts[i]
             modelContext.delete(workout)
         }
     }
