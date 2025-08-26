@@ -10,30 +10,32 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var path = [Workout]()
     
     @Query(sort: \Workout.date, order: .reverse) private var workouts: [Workout]
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             List {
                 ForEach(workouts) { workout in
-                    VStack(alignment: .leading) {
-                        Text(workout.type)
-                            .font(.headline)
-                        
-                        Text(workout.date, style: .date)
-                        
-                        Text("\(workout.duration, specifier: "%.0f") min")
-                            .font(.subheadline)
+                    NavigationLink(value: workout) {
+                        VStack(alignment: .leading) {
+                            Text(workout.type)
+                                .font(.headline)
+                            
+                            Text(workout.date, style: .date)
+                            
+                            Text("\(workout.duration, specifier: "%.0f") min")
+                                .font(.subheadline)
+                        }
                     }
                 }
                 .onDelete(perform: clearWorkouts)
             }
             .navigationTitle("Workouts")
+            .navigationDestination(for: Workout.self, destination: WorkoutDetailView.init)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add workouts", action: addWorkouts)
-                }
+                Button("Add Workout", systemImage: "plus", action: addWorkout)
             }
         }
     }
@@ -45,14 +47,10 @@ struct ContentView: View {
         }
     }
     
-    func addWorkouts() {
-        let push = Workout(type: "Push", Duration: 45)
-        let pull = Workout(type: "Pull", Duration: 55)
-        let legs = Workout(type: "Legs", Duration: 75)
-
-        modelContext.insert(push)
-        modelContext.insert(pull)
-        modelContext.insert(legs)
+    func addWorkout() {
+        let workout = Workout()
+        modelContext.insert(workout)
+        	path = [workout]
     }
 }
 
@@ -60,14 +58,6 @@ struct ContentView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Workout.self, configurations: config)
-
-        let push = Workout(type: "Push", Duration: 45)
-        let pull = Workout(type: "Pull", Duration: 55)
-        let legs = Workout(type: "Legs", Duration: 75)
-        
-        container.mainContext.insert(push)
-        container.mainContext.insert(pull)
-        container.mainContext.insert(legs)
         
         return ContentView()
             .modelContainer(container)
