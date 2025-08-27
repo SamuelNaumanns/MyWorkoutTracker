@@ -16,11 +16,11 @@ class Workout {
     var duration : Double
     var notes : String?
     
-    init(id: UUID = UUID(), date: Date = .now, type: String = "", Duration: Double = 15, notes: String? = nil) {
+    init(id: UUID = UUID(), date: Date = .now, type: String = "", duration: Double = 15, notes: String? = nil) {
         self.id = id
         self.date = date
         self.type = type
-        self.duration = Duration
+        self.duration = duration
         self.notes = notes
     }
 }

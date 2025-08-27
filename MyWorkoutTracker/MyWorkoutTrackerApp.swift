@@ -12,7 +12,7 @@ import SwiftData
 struct MyWorkoutTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WorkoutListView()
         }
         .modelContainer(for: Workout.self)
     }

@@ -10,7 +10,9 @@ import SwiftData
 
 struct WorkoutListView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var viewModel = WorkoutListViewModel()
     @State private var path = [Workout]()
+    @State private var showingAddWorkout = false
     
     @Query(sort: \Workout.date, order: .reverse) private var workouts: [Workout]
     
@@ -30,12 +32,26 @@ struct WorkoutListView: View {
                         }
                     }
                 }
-                .onDelete(perform: clearWorkouts)
+                .onDelete {indexSet in
+                    indexSet.map { workouts[$0] }.forEach { workout in
+                        viewModel.deleteWorkout(context: modelContext, workout: workout)
+                    }
+                }
             }
             .navigationTitle("Workouts")
-            .navigationDestination(for: Workout.self, destination: WorkoutDetailView.init)
+            .navigationDestination(for: Workout.self, destination: WorkoutEditingView.init)
             .toolbar {
-                Button("Add Workout", systemImage: "plus", action: addWorkout)
+                Button("Add Workout", systemImage: "plus") {
+                    showingAddWorkout = true
+                }
+            }
+            .sheet(isPresented: $showingAddWorkout) {
+                NavigationStack {
+                    WorkoutCreationView { type, duration, notes in
+                        viewModel.addWorkout(context: modelContext, type: type, duration: duration, notes: notes)
+                    }
+                }
+
             }
         }
     }
@@ -50,7 +66,7 @@ struct WorkoutListView: View {
     func addWorkout() {
         let workout = Workout()
         modelContext.insert(workout)
-        	path = [workout]
+        path = [workout]
     }
 }
 
