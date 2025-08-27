@@ -55,19 +55,6 @@ struct WorkoutListView: View {
             }
         }
     }
-    
-    func clearWorkouts(_ indexSet: IndexSet) {
-        for i in indexSet {
-            let workout = workouts[i]
-            modelContext.delete(workout)
-        }
-    }
-    
-    func addWorkout() {
-        let workout = Workout()
-        modelContext.insert(workout)
-        path = [workout]
-    }
 }
 
 #Preview {
