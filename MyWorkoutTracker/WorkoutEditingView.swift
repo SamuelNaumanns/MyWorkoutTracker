@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct WorkoutDetailView: View {
+struct WorkoutEditingView: View {
     @Bindable var workout: Workout
     
     var body: some View {
@@ -38,7 +38,7 @@ struct WorkoutDetailView: View {
         let container = try ModelContainer(for: Workout.self, configurations: config)
         
         let example = Workout()
-        return WorkoutDetailView(workout: example)
+        return WorkoutEditingView(workout: example)
             .modelContainer(container)
     } catch {
         fatalError("Failed to create model container.")

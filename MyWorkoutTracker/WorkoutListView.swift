@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct WorkoutListView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var path = [Workout]()
     
@@ -59,7 +59,7 @@ struct ContentView: View {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Workout.self, configurations: config)
         
-        return ContentView()
+        return WorkoutListView()
             .modelContainer(container)
     } catch {
         fatalError("Failed to create model container for previewing: \(error.localizedDescription)")
